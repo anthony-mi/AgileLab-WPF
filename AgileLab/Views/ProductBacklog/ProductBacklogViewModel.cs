@@ -55,6 +55,11 @@ namespace AgileLab.Views.ProductBacklog
 
         private ICommand _requestStoryEditing = null;
         private ICommand _requestStoryRemoving = null;
+
+        private ICommand _hideErrorMessageDialog = null;
+        private ICommand _requestUserStoryCreation = null;
+        private ICommand _cancelStoryCreation = null;
+        private ICommand _cancelStoryRemoving = null;
         #endregion
 
         #region Constructors
@@ -71,36 +76,17 @@ namespace AgileLab.Views.ProductBacklog
         #endregion
 
         #region Commands
-        public ICommand HideErrorMessageDialog => new Command(
-            () =>
-            {
-                ShowErrorMessageDialog = false;
+        public ICommand HideErrorMessageDialog
+        {
+            get => _hideErrorMessageDialog;
+            private set => SetProperty(ref _hideErrorMessageDialog, value);
+        }
 
-                if (_menuBasedShellViewModel.CurrentProject == null)
-                {
-                    _menuBasedShellViewModel.SetCurrentViewModel(typeof(ProjectsViewModel));
-                }
-            },
-            null);
-
-        public ICommand RequestUserStoryCreation => new Command(
-            new Action(
-                delegate
-                {
-                    if (_menuBasedShellViewModel.CurrentProject == null)
-                    {
-                        ShowErrorMessage("Select project!");
-                    }
-                    else
-                    {
-                        ClearStoryDialogFields();
-                        ConfirmStoryCommand = _createStoryCommand; 
-                        NewStoryStatus = _storyStatusesDataModel.GetStatusText(StoryStatus.WaitingForExecutor);
-                        IsNewStoryStatusEditable = false;
-                        ShowStoryDialog = true;
-                    }
-                }),
-            null);
+        public ICommand RequestUserStoryCreation
+        {
+            get => _requestUserStoryCreation;
+            private set => SetProperty(ref _requestUserStoryCreation, value);
+        }
 
         public ICommand ConfirmStoryCommand
         {
@@ -115,13 +101,31 @@ namespace AgileLab.Views.ProductBacklog
             }
         }
 
-        public ICommand CancelStoryCreation => new Command(
-            new Action(delegate { ShowStoryDialog = false; }),
-            null);
+        public ICommand CancelStoryCreation
+        {
+            get
+            {
+                return _cancelStoryCreation;
+            }
 
-        public ICommand CancelStoryRemoving => new Command(
-            new Action(delegate { ShowRemoveStoryConfirmationDialog = false; }),
-            null);
+            private set
+            {
+                SetProperty(ref _cancelStoryCreation, value);
+            }
+        }
+
+        public ICommand CancelStoryRemoving
+        {
+            get
+            {
+                return _cancelStoryRemoving;
+            }
+
+            private set
+            {
+                SetProperty(ref _cancelStoryRemoving, value);
+            }
+        }
 
         public ICommand RemoveStoryCommand
         {
@@ -314,6 +318,45 @@ namespace AgileLab.Views.ProductBacklog
                             ShowRemoveStoryConfirmationDialog = true;
                         },
                     canExecute: null);
+
+            HideErrorMessageDialog = new Command(
+            () =>
+            {
+                ShowErrorMessageDialog = false;
+
+                if (_menuBasedShellViewModel.CurrentProject == null)
+                {
+                    _menuBasedShellViewModel.SetCurrentViewModel(typeof(ProjectsViewModel));
+                }
+            },
+            null);
+
+            RequestUserStoryCreation = new Command(
+            new Action(
+                delegate
+                {
+                    if (_menuBasedShellViewModel.CurrentProject == null)
+                    {
+                        ShowErrorMessage("Select project!");
+                    }
+                    else
+                    {
+                        ClearStoryDialogFields();
+                        ConfirmStoryCommand = _createStoryCommand;
+                        NewStoryStatus = _storyStatusesDataModel.GetStatusText(StoryStatus.WaitingForExecutor);
+                        IsNewStoryStatusEditable = false;
+                        ShowStoryDialog = true;
+                    }
+                }),
+            null);
+
+            CancelStoryCreation = new Command(
+            new Action(delegate { ShowStoryDialog = false; }),
+            null);
+
+            CancelStoryRemoving = new Command(
+            new Action(delegate { ShowRemoveStoryConfirmationDialog = false; }),
+            null);
         }
 
         private bool CanEditStory(object obj)

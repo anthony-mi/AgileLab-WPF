@@ -26,6 +26,10 @@ namespace AgileLab.Views.Teams
         private string _teamCreationErrorMessage = string.Empty;
         private bool _showTeamCreationErrorMessage = false;
         private string _newTeamName = string.Empty;
+
+        private ICommand _requestTeamCreationCommand;
+        private ICommand _createTeamCommand;
+        private ICommand _cancelTeamCreationCommand;
         #endregion
 
         #region Constructors
@@ -33,23 +37,45 @@ namespace AgileLab.Views.Teams
         {
             _menuBasedShellViewModel = menuBasedShellViewModel;
 
+            InitializeCommands();
             InitializeTeams();
             SubscribeToDataModelEvents();
+        }
+
+        private void InitializeCommands()
+        {
+            RequestTeamCreationCommand = new Command(
+                new Action(delegate { ShowDialog = true; }),
+                null);
+
+            CreateTeamCommand = new Command(
+                CreateTeam,
+                CanCreateTeam);
+
+            CancelTeamCreationCommand = new Command(
+                new Action(delegate { ShowDialog = false; }),
+                null);
         }
         #endregion
 
         #region Commands
-        public ICommand RequestTeamCreationCommand => new Command(
-            new Action(delegate { ShowDialog = true; }),
-            null);
+        public ICommand RequestTeamCreationCommand
+        {
+            get => _requestTeamCreationCommand;
+            set => SetProperty(ref _requestTeamCreationCommand, value);
+        }
 
-        public ICommand CreateTeamCommand => new Command(
-            CreateTeam,
-            CanCreateTeam);
+        public ICommand CreateTeamCommand
+        {
+            get => _createTeamCommand;
+            set => SetProperty(ref _createTeamCommand, value);
+        }
 
-        public ICommand CancelTeamCreationCommand => new Command(
-            new Action(delegate { ShowDialog = false; }),
-            null);
+        public ICommand CancelTeamCreationCommand
+        {
+            get => _cancelTeamCreationCommand;
+            set => SetProperty(ref _cancelTeamCreationCommand, value);
+        }
         #endregion
 
         #region Properties

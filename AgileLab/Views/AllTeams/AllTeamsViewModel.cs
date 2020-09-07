@@ -30,6 +30,9 @@ namespace AgileLab.Views.AllTeams
 
         private static readonly string _LEAVE_TEAM_ACTION_NAME = "Leave";
         private static readonly string _JOIN_TEAM_ACTION_NAME = "Join";
+
+        private ICommand _joinCommand;
+        private ICommand _leaveCommand;
         #endregion
 
         #region Constructors
@@ -38,7 +41,14 @@ namespace AgileLab.Views.AllTeams
             _menuBasedShellViewModel = menuBasedShellViewModel;
 
             CreateTeamItems();
+            InitializeCommands();
             SubscribeToDataModelEvents();
+        }
+
+        private void InitializeCommands()
+        {
+            JoinCommand = new Command(parameterizedAction: new Action<object>(JoinTeam), canExecute: null);
+            LeaveCommand = new Command(LeaveTeam, null);
         }
 
         private void CreateTeamItems()
@@ -95,11 +105,17 @@ namespace AgileLab.Views.AllTeams
         #endregion
 
         #region Commands
-        public ICommand JoinCommand => new Command(parameterizedAction: new Action<object>(JoinTeam), canExecute: null);
+        public ICommand JoinCommand
+        {
+            get => _joinCommand;
+            set => SetProperty(ref _joinCommand, value);
+        }
 
-        public ICommand LeaveCommand => new Command(
-            LeaveTeam,
-            null);
+        public ICommand LeaveCommand
+        {
+            get => _leaveCommand;
+            set => SetProperty(ref _leaveCommand, value);
+        }
         #endregion
 
         #region Properties

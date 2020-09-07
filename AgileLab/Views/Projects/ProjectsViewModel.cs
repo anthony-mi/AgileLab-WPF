@@ -32,6 +32,11 @@ namespace AgileLab.Views.Projects
         private string _projectCreationErrorMessage = string.Empty;
         private bool _showProjectCreationErrorMessage = false;
         private string _newProjectName = string.Empty;
+
+        private ICommand _hideErrorMessageDialog;
+        private ICommand _requestProjectCreation;
+        private ICommand _createProjectCommand;
+        private ICommand _cancelProjectCreation;
         #endregion
 
         #region Constructors
@@ -41,7 +46,43 @@ namespace AgileLab.Views.Projects
             _menuBasedShellViewModel.PropertyChanged += MenuBasedShellViewModelPropertyChangedEventHandler;
 
             InitializeProjects();
+            InitializeCommands();
             SubscribeToDataModelEvents();
+        }
+
+        private void InitializeCommands()
+        {
+            _hideErrorMessageDialog = new Command(
+                () =>
+                {
+                    ShowErrorMessageDialog = false;
+
+                    if (_menuBasedShellViewModel.CurrentTeam == null)
+                    {
+                        _menuBasedShellViewModel.SetCurrentViewModel(typeof(TeamsViewModel));
+                    }
+                },
+                null);
+
+            _requestProjectCreation = new Command(
+            new Action(
+                delegate
+                {
+                    if (_menuBasedShellViewModel.CurrentTeam == null)
+                    {
+                        ShowErrorMessage("Select team!");
+                    }
+                    else
+                    {
+                        ShowCreateNewProjectDialog = true;
+                    }
+                }),
+            null);
+
+            _createProjectCommand = new Command(CreateProject, CanCreateProject);
+            _cancelProjectCreation = new Command(
+                new Action(delegate { ShowCreateNewProjectDialog = false; }),
+                null);
         }
         #endregion
 
@@ -65,40 +106,29 @@ namespace AgileLab.Views.Projects
         }
 
         #region Commands
-        public ICommand HideErrorMessageDialog => new Command(
-            () =>
-            {
-                ShowErrorMessageDialog = false;
+        public ICommand HideErrorMessageDialog
+        {
+            get => _hideErrorMessageDialog;
+            private set => SetProperty(ref _hideErrorMessageDialog, value);
+        }
 
-                if(_menuBasedShellViewModel.CurrentTeam == null)
-                {
-                    _menuBasedShellViewModel.SetCurrentViewModel(typeof(TeamsViewModel));
-                }
-            },
-            null);
+        public ICommand RequestProjectCreation
+        {
+            get => _requestProjectCreation;
+            private set => SetProperty(ref _requestProjectCreation, value);
+        }
 
-        public ICommand RequestProjectCreation => new Command(
-            new Action(
-                delegate 
-                {
-                    if (_menuBasedShellViewModel.CurrentTeam == null)
-                    {
-                        ShowErrorMessage("Select team!");
-                    }
-                    else
-                    {
-                        ShowCreateNewProjectDialog = true;
-                    }
-                }),
-            null);
+        public ICommand CreateProjectCommand
+        {
+            get => _createProjectCommand;
+            private set => SetProperty(ref _createProjectCommand, value);
+        }
 
-        public ICommand CreateProjectCommand => new Command(
-            CreateProject,
-            CanCreateProject);
-
-        public ICommand CancelProjectCreation => new Command(
-            new Action(delegate { ShowCreateNewProjectDialog = false; }),
-            null);
+        public ICommand CancelProjectCreation
+        {
+            get => _cancelProjectCreation;
+            private set => SetProperty(ref _cancelProjectCreation, value);
+        }
         #endregion
 
         #region Properties

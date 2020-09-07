@@ -38,6 +38,9 @@ namespace AgileLab.Views.Sprint
 
         private bool _showDialog = false;
 
+
+        private ICommand _requestUserStoryCreation = null;
+        private ICommand _finishCommand = null;
         private ICommand _requestStoryEditing = null;
         private ICommand _requestStoryRemoving = null;
         //private Action _removeStoryAction = null; // After confirmation.
@@ -132,6 +135,39 @@ namespace AgileLab.Views.Sprint
 
         private void InitializeCommands()
         {
+            _requestUserStoryCreation = new Command(
+            new Action(
+                delegate
+                {
+                    StoryDialogViewModel = new StoryDialogViewModel();
+                    StoryDialogViewModel.IsStatusEditable = false;
+                    StoryDialogViewModel.Status = _storyStatusesDataModel.GetStatusText(StoryStatus.WaitingForExecutor);
+                    StoryDialogViewModel.ConfirmSelected += CreateStoryFromDialog;
+                    StoryDialogViewModel.CancelSelected +=
+                        delegate
+                        {
+                            HideDialog?.Invoke(this, null);
+                        };
+                    SetDialog?.Invoke(this, StoryDialogViewModel);
+                }),
+            null);
+
+            _finishCommand = new Command(
+            new Action(
+                delegate
+                {
+                    ConfirmationDialogViewModel = new ConfirmationDialogViewModel();
+                    ConfirmationDialogViewModel.Text = "Do you really want to finish the sprint now?";
+                    ConfirmationDialogViewModel.ConfirmSelected += FinishCurrentSprint;
+                    ConfirmationDialogViewModel.CancelSelected +=
+                        delegate
+                        {
+                            HideDialog?.Invoke(this, null);
+                        };
+                    SetDialog?.Invoke(this, ConfirmationDialogViewModel);
+                }),
+            null);
+
             _requestStoryEditing = new Command(
                             parameterizedAction:
                                 delegate (object param)
@@ -586,38 +622,17 @@ namespace AgileLab.Views.Sprint
             set => SetProperty(ref _selectedStory, value);
         }
 
-        public ICommand RequestUserStoryCreation => new Command(
-            new Action(
-                delegate
-                {
-                    StoryDialogViewModel = new StoryDialogViewModel();
-                    StoryDialogViewModel.IsStatusEditable = false;
-                    StoryDialogViewModel.Status = _storyStatusesDataModel.GetStatusText(StoryStatus.WaitingForExecutor);
-                    StoryDialogViewModel.ConfirmSelected += CreateStoryFromDialog;
-                    StoryDialogViewModel.CancelSelected += 
-                        delegate 
-                        {
-                            HideDialog?.Invoke(this, null);
-                        };
-                    SetDialog?.Invoke(this, StoryDialogViewModel);
-                }),
-            null);
+        public ICommand RequestUserStoryCreation
+        {
+            get => _requestUserStoryCreation;
+            set => SetProperty(ref _requestUserStoryCreation, value);
+        }
 
-        public ICommand FinishCommand => new Command(
-            new Action(
-                delegate
-                {
-                    ConfirmationDialogViewModel = new ConfirmationDialogViewModel();
-                    ConfirmationDialogViewModel.Text = "Do you really want to finish the sprint now?";
-                    ConfirmationDialogViewModel.ConfirmSelected += FinishCurrentSprint;
-                    ConfirmationDialogViewModel.CancelSelected +=
-                        delegate
-                        {
-                            HideDialog?.Invoke(this, null);
-                        };
-                    SetDialog?.Invoke(this, ConfirmationDialogViewModel);
-                }),
-            null);
+        public ICommand FinishCommand
+        {
+            get => _finishCommand;
+            set => SetProperty(ref _finishCommand, value);
+        }
 
         public string MainGoal
         {
