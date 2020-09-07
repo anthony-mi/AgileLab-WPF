@@ -26,8 +26,6 @@ namespace AgileLab.Views.Teams
         private string _teamCreationErrorMessage = string.Empty;
         private bool _showTeamCreationErrorMessage = false;
         private string _newTeamName = string.Empty;
-
-        private ICommand _requestTeamCreationCommand;
         #endregion
 
         #region Constructors
