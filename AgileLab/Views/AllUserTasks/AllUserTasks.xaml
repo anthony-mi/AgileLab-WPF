@@ -1,0 +1,414 @@
+﻿<UserControl x:Class="AgileLab.Views.AllUserTasks.AllUserTasks"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AgileLab.Views.AllUserTasks"
+             xmlns:confirmation_dialog="clr-namespace:AgileLab.Views.Dialogs.ConfirmationDialog"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <UserControl.Resources>
+        <Style TargetType="{x:Type dialog:BaseMetroDialog}"
+        x:Key="StoryDialogStyle"
+        BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="StoryDialogShownStoryboard">
+                                <DoubleAnimation AccelerationRatio=".9"
+                                            BeginTime="0:0:0"
+                                            Duration="0:0:0.2"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1" />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border FocusVisualStyle="{x:Null}"
+                            Focusable="False">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                                FontSize="{DynamicResource DialogTitleFontSize}"
+                                                Foreground="{TemplateBinding Foreground}"
+                                                Text="{TemplateBinding Title}"
+                                                TextWrapping="Wrap" 
+                                                Margin="10" 
+                                               HorizontalAlignment="Center"/>
+                                    <ContentPresenter Grid.Row="1" Grid.Column="0"
+                                                        Content="{TemplateBinding Content}" 
+                                                        Margin="10" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard Storyboard="{StaticResource StoryDialogShownStoryboard}" />
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type dialog:BaseMetroDialog}"
+        x:Key="ErrorMessageDialogStyle"
+        BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="ErrorMessageDialogShownStoryboard">
+                                <DoubleAnimation AccelerationRatio=".9"
+                                            BeginTime="0:0:0"
+                                            Duration="0:0:0.2"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1" />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border FocusVisualStyle="{x:Null}"
+                            Focusable="False">
+                                <WrapPanel>
+                                    <ContentPresenter Content="{TemplateBinding Content}" Margin="10" />
+                                </WrapPanel>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard Storyboard="{StaticResource ErrorMessageDialogShownStoryboard}" />
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type dialog:BaseMetroDialog}"
+        x:Key="ConfirmationDialogStyle"
+        BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="ConfirmationDialogShownStoryboard">
+                                <DoubleAnimation AccelerationRatio=".9"
+                                            BeginTime="0:0:0"
+                                            Duration="0:0:0.2"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1" />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border FocusVisualStyle="{x:Null}"
+                            Focusable="False">
+                                <WrapPanel>
+                                    <ContentPresenter Content="{TemplateBinding Content}" Margin="10" />
+                                </WrapPanel>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard Storyboard="{StaticResource ConfirmationDialogShownStoryboard}" />
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ContentControl Grid.Row="0" >
+            <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                <StackPanel Orientation="Vertical">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <DataGrid 
+                                ItemsSource="{Binding AllUserTasks}" 
+                                IsReadOnly="True" 
+                                AutoGenerateColumns="False"
+                                SelectedItem="{Binding SelectedTask}"
+                                Margin="10">
+                            <!--RowStyle="{StaticResource DefaultRowStyle}"-->
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="120" />
+                                <DataGridTextColumn Header="Importance" Binding="{Binding Path=Importance}" Width="120" />
+                                <DataGridTextColumn Header="Finishing date" Binding="{Binding Path=SprintFinishingDate}" Width="140" />
+                                <DataGridTextColumn Header="Project name" Binding="{Binding Path=ProjectName}" Width="120" />
+                                <DataGridTemplateColumn Header="" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding EditCommand}" 
+                                                    CommandParameter="{Binding}"
+                                                    Cursor="Hand"
+                                                    ToolTip="Edit">
+                                                <iconPacks:PackIconMaterialLight Kind="Pencil" />
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding RemoveCommand}" 
+                                                    CommandParameter="{Binding}"
+                                                    Cursor="Hand"
+                                                    ToolTip="Remove">
+                                                <iconPacks:PackIconOcticons Kind="X" />
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding FinishCommand}" 
+                                                    CommandParameter="{Binding}"
+                                                    Content="Finish"
+                                                    Cursor="Hand"
+                                                    ToolTip="Remove">
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </ScrollViewer>
+                </StackPanel>
+            </ScrollViewer>
+        </ContentControl>
+
+        <Grid x:Name="DialogsMask"
+              Visibility="Hidden">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource AccentBaseColor}"
+                                             Opacity="0.85" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ShowDialog}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <dialog:CustomDialog
+                        x:Name="ErrorMessageDialog"
+                        Style="{StaticResource ErrorMessageDialogStyle}"
+                        Visibility="Hidden"
+                        DataContext="{Binding MessageBoxViewModel}">
+                <StackPanel>
+                    <TextBlock Height="30"
+                    Text="{Binding Text}"
+                    TextWrapping="Wrap" />
+                    <Button 
+                        Content="OK" 
+                        Margin="10" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Bottom" 
+                        Command="{Binding ConfirmCommand}"
+                        Cursor="Hand"/>
+                </StackPanel>
+            </dialog:CustomDialog>
+
+            <dialog:CustomDialog 
+            x:Name="ConfirmationDialog"
+            Style="{StaticResource ConfirmationDialogStyle}"
+            Visibility="Hidden"
+            DataContext="{Binding ConfirmationDialogViewModel}">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Height="30"
+                               Text="{Binding Text}"
+                               TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                    Content="Yes" 
+                    Margin="10" 
+                    Padding="20 5"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Bottom" 
+                    Command="{Binding ConfirmCommand}"
+                    Cursor="Hand"/>
+                        <Button 
+                    Content="No" 
+                    Margin="10" 
+                    Padding="20 5"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Bottom" 
+                    Command="{Binding CancelCommand}"
+                    Cursor="Hand"/>
+                    </StackPanel>
+                </StackPanel>
+            </dialog:CustomDialog>
+
+            <dialog:CustomDialog 
+                x:Name="StoryDialog"
+                Style="{StaticResource StoryDialogStyle}"
+                Visibility="Hidden"
+                DataContext="{Binding StoryDialogViewModel}"
+                Title="User story"
+                HorizontalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Height="30"
+                            Text="Name"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="5" 
+                            VerticalAlignment="Center" />
+                    <TextBox 
+                            Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                            Grid.Row="0" 
+                            Grid.Column="1" 
+                            Margin="10" 
+                            Width="200" 
+                            VerticalAlignment="Center"/>
+
+                    <TextBlock Height="30"
+                            Text="Importance"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="5" 
+                            VerticalAlignment="Center" />
+                    <controls:NumericUpDown Minimum="1"
+                            Maximum="10000"
+                            Interval="1"
+                            Value="{Binding Importance, Mode=TwoWay}"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="200"
+                            Margin="10"
+                            HideUpDownButtons="False" />
+
+                    <TextBlock Height="30"
+                            Text="Initial estimate"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="5" 
+                            VerticalAlignment="Center" />
+                    <controls:NumericUpDown Minimum="1"
+                            Maximum="10000"
+                            Interval="1"
+                            Value="{Binding InitialEstimate, Mode=TwoWay}"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Width="200"
+                            Margin="10"
+                            HideUpDownButtons="False" />
+
+                    <TextBlock Height="30"
+                            Text="Status"
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Margin="5" 
+                            VerticalAlignment="Center" />
+                    <ComboBox
+                            ItemsSource="{Binding Statuses}"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Width="200"
+                            Margin="10"
+                            SelectedValue="{Binding Status, Mode=TwoWay}"
+                            IsEnabled="{Binding IsStatusEditable}"/>
+
+                    <TextBlock Height="30"
+                            Text="How to demonstrate"
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Margin="5" 
+                            VerticalAlignment="Center" />
+                    <TextBox 
+                            Text="{Binding HowToDemo, Mode=TwoWay}" 
+                            Grid.Row="4" 
+                            Grid.Column="1" 
+                            Margin="10" 
+                            Width="200" 
+                            VerticalAlignment="Center"/>
+
+                    <TextBlock Height="30"
+                            Text="Notes"
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Margin="5" 
+                            VerticalAlignment="Center" />
+                    <TextBox 
+                            Text="{Binding Notes, Mode=TwoWay}" 
+                            Grid.Row="5" 
+                            Grid.Column="1" 
+                            Margin="10" 
+                            Width="200" 
+                            Height="50"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto"/>
+
+                    <TextBlock
+                            Text="{Binding ErrorMessage}"
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="PaleVioletRed"
+                            Margin="10" 
+                            VerticalAlignment="Center"
+                            Padding="5"
+                            Visibility="{Binding ShowErrorMessage, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}" />
+                    <Button 
+                        Content="Confirm" 
+                        Grid.Row="7" 
+                        Grid.Column="0" 
+                        Margin="5" 
+                        Command="{Binding ConfirmCommand}"
+                        Cursor="Hand"/>
+                    <Button 
+                        Content="Cancel" 
+                        Grid.Row="7" 
+                        Grid.Column="1" 
+                        Margin="5" 
+                        Command="{Binding CancelCommand}"
+                        Cursor="Hand"/>
+                </Grid>
+            </dialog:CustomDialog>
+        </Grid>
+    </Grid>
+</UserControl>

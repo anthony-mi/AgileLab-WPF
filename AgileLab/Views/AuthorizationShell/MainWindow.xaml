@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="AgileLab.Views.AuthorizationShell.AuthorizationShell"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AgileLab.Views.AuthorizationShell"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        dialog:DialogParticipation.Register="{Binding RelativeSource={RelativeSource Self}}"
+        xmlns:login="clr-namespace:AgileLab.Views.Login"
+        xmlns:signup="clr-namespace:AgileLab.Views.SignUp"
+        mc:Ignorable="d"
+        BorderThickness="0" 
+        d:DataContext="{d:DesignInstance local:AuthorizationShellViewModel}">
+
+    <Grid Background="{DynamicResource AccentBaseColorBrush}">
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type login:LoginViewModel}">
+                <login:Login />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type signup:SignUpViewModel}">
+                <signup:SignUp />
+            </DataTemplate>
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ContentControl Grid.Row="0"
+                        Content="{Binding CurrentViewModel}" />
+
+    </Grid>
+</UserControl>

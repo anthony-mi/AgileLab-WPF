@@ -1,0 +1,11 @@
+﻿using System;
+
+namespace AgileLab.Services.Authentication
+{
+    class AuthenticationException : Exception
+    {
+        public AuthenticationException(string message) : base(message)
+        {
+        }
+    }
+}

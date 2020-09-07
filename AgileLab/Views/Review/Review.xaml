@@ -1,0 +1,201 @@
+﻿<UserControl x:Class="AgileLab.Views.Review.Review"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AgileLab.Views.Review"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type dialog:BaseMetroDialog}"
+        x:Key="MessageDialogStyle"
+        BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="MessageDialogShownStoryboard">
+                                <DoubleAnimation AccelerationRatio=".9"
+                                            BeginTime="0:0:0"
+                                            Duration="0:0:0.2"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1" />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border FocusVisualStyle="{x:Null}"
+                            Focusable="False">
+                                <WrapPanel>
+                                    <ContentPresenter Content="{TemplateBinding Content}" Margin="10" />
+                                </WrapPanel>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard Storyboard="{StaticResource MessageDialogShownStoryboard}" />
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ContentControl Grid.Row="0" >
+            <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding ProjectName}" Margin="15" FontSize="21" HorizontalAlignment="Center"/>
+                    <WrapPanel>
+                        <Border 
+                            Width="150" 
+                            Height="80" 
+                            Padding="10" 
+                            Margin="10" 
+                            BorderBrush="#9e9e9e"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <iconPacks:PackIconMaterial Grid.Row="0" Kind="CalendarBlank" Foreground="{DynamicResource AccentColorBrush}" />
+                                <TextBlock Grid.Row="2" VerticalAlignment="Bottom" FontSize="14" Text="{Binding StartedAtDate}" />
+                                <TextBlock Grid.Row="3" VerticalAlignment="Bottom" Foreground="#9e9e9e" FontSize="10" Text="Started at" />
+                            </Grid>
+                        </Border>
+                        <Border 
+                            Width="150" 
+                            Height="80" 
+                            Padding="10" 
+                            Margin="10" 
+                            BorderBrush="#9e9e9e"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <iconPacks:PackIconMaterial Grid.Row="0" Kind="Timer" Foreground="{DynamicResource AccentColorBrush}" />
+                                <TextBlock Grid.Row="2" VerticalAlignment="Bottom" FontSize="14" Text="{Binding TotalSprints}" />
+                                <TextBlock Grid.Row="3" VerticalAlignment="Bottom" Foreground="#9e9e9e" FontSize="10" Text="Total sprints" />
+                            </Grid>
+                        </Border>
+                        <Border 
+                            Width="150" 
+                            Height="80" 
+                            Padding="10" 
+                            Margin="10" 
+                            BorderBrush="#9e9e9e"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <iconPacks:PackIconMaterial Grid.Row="0" Kind="Medal" Foreground="{DynamicResource AccentColorBrush}" />
+                                <TextBlock Grid.Row="2" VerticalAlignment="Bottom" FontSize="14" Text="{Binding PointsOnOneSprint}" />
+                                <TextBlock Grid.Row="3" VerticalAlignment="Bottom" Foreground="#9e9e9e" FontSize="10" Text="Points per one sprint" />
+                            </Grid>
+                        </Border>
+                        <Border 
+                            Width="150" 
+                            Height="80" 
+                            Padding="10" 
+                            Margin="10" 
+                            BorderBrush="#9e9e9e"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <iconPacks:PackIconMaterial Grid.Row="0" Kind="CheckAll" Foreground="{DynamicResource AccentColorBrush}" />
+                                <TextBlock Grid.Row="2" VerticalAlignment="Bottom" FontSize="14" Text="{Binding PointsDone}" />
+                                <TextBlock Grid.Row="3" VerticalAlignment="Bottom" Foreground="#9e9e9e" FontSize="10" Text="Points done" />
+                            </Grid>
+                        </Border>
+                        <Border 
+                            Width="150" 
+                            Height="80" 
+                            Padding="10" 
+                            Margin="10" 
+                            BorderBrush="#9e9e9e"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <iconPacks:PackIconMaterial Grid.Row="0" Kind="Bullseye" Foreground="{DynamicResource AccentColorBrush}" />
+                                <TextBlock Grid.Row="2" VerticalAlignment="Bottom" FontSize="14" Text="{Binding PointsOpen}" />
+                                <TextBlock Grid.Row="3" VerticalAlignment="Bottom" Foreground="#9e9e9e" FontSize="10" Text="Points open" />
+                            </Grid>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+                
+            </ScrollViewer>
+        </ContentControl>
+
+        <Grid x:Name="DialogsMask"
+              Visibility="Hidden">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource AccentBaseColor}"
+                                             Opacity="0.85" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ShowDialog}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <dialog:CustomDialog
+                        x:Name="ErrorMessageDialog"
+                        Style="{StaticResource MessageDialogStyle}"
+                        Visibility="Hidden"
+                        DataContext="{Binding MessageBoxViewModel}">
+                <StackPanel>
+                    <TextBlock Height="30"
+                    Text="{Binding Text}"
+                    TextWrapping="Wrap" />
+                    <Button 
+                        Content="OK" 
+                        Margin="10" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Bottom" 
+                        Command="{Binding ConfirmCommand}"
+                        Cursor="Hand"/>
+                </StackPanel>
+            </dialog:CustomDialog>
+        </Grid>
+    </Grid>
+</UserControl>

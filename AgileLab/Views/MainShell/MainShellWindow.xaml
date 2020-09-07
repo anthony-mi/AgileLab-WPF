@@ -1,0 +1,70 @@
+﻿<Controls:MetroWindow x:Class="AgileLab.Views.MainShell.MainShellWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AgileLab.Views.MainShell"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        dialog:DialogParticipation.Register="{Binding RelativeSource={RelativeSource Self}}"
+        xmlns:authshell="clr-namespace:AgileLab.Views.AuthorizationShell"
+        xmlns:menubasedshell="clr-namespace:AgileLab.Views.MenuBasedShell"
+        mc:Ignorable="d"
+        BorderThickness="0" 
+        WindowStartupLocation="CenterScreen"
+        Title="{Binding TitleBarText}" Height="485" Width="800" MinHeight="485"
+        d:DataContext="{d:DesignInstance local:MainShellViewModel}">
+
+    <Controls:MetroWindow.Resources>
+        <DataTemplate DataType="{x:Type authshell:AuthorizationShellViewModel}">
+            <authshell:AuthorizationShell />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type menubasedshell:MenuBasedShellViewModel}">
+            <menubasedshell:MenuBasedShell />
+        </DataTemplate>
+    </Controls:MetroWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ContentControl Grid.Row="0"
+                        Content="{Binding CurrentViewModel}" />
+
+        <Grid Grid.Row="0">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource AccentBaseColor}"
+                                             Opacity="0.85" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoadingData}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="5">
+                <Controls:ProgressRing Foreground="{DynamicResource IdealForegroundColorBrush}"
+                                  Margin="5"
+                                  Width="55" />
+
+                <TextBlock Text="Loading..."
+                           Foreground="{DynamicResource IdealForegroundColorBrush}"
+                           Margin="10"
+                           FontWeight="DemiBold"
+                           TextAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Controls:MetroWindow>
